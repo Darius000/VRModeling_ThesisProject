@@ -679,8 +679,10 @@ void UEditableMeshComponent::ExtrudeEdges(FVector Direction, float Amount, bool 
 	for (UIHalfEdge* Edge : UEditableMeshLibrary::GetSelectedEdges())
 	{
 		ExtrudeEdge(Edge, Direction, Amount, bNormal);
-		CreateGBComponent(Edge, Edge->GetPosition());
+		Edge->Select(false);
 	}
+
+	SpawnGBComponents(true);
 
 	UpdateSceneProxy();
 }
@@ -704,7 +706,7 @@ void UEditableMeshComponent::ExtrudeFace(UIFace* face, float amount, bool update
 
 	do
 	{
-		FVector NewLocation = Start->GetVertex()->GetPosition() + (face->CalculateNormal() * amount);
+		FVector NewLocation = Start->GetVertex()->GetPosition() + (-face->CalculateNormal() * amount);
 
 		CVertices.Add(UIVertex::CreateVertex(mesh, NewLocation));
 
@@ -719,18 +721,32 @@ void UEditableMeshComponent::ExtrudeFace(UIFace* face, float amount, bool update
 	UIVertex* V3;
 
 	//Create Top Face
-	V0 = CVertices[3];
-	V1 = CVertices[4];
-	V2 = CVertices[5];
+	
+	int32 numVertices = face->mNumVertices;
 
-	UAssimpMeshLibrary::Triangles(mesh, { V0, V1, V2 });
-
-	for (int32 i = 0; i < 3; i++)
+	if (numVertices == 3)
 	{
-		V0 = CVertices[(i) % 3];
-		V3 = CVertices[((i) % (3)) + 3];
-		V2 = CVertices[((i + 1) % (3)) + 3];
-		V1 = CVertices[(i + 1) % 3];
+		V0 = CVertices[3];
+		V1 = CVertices[4];
+		V2 = CVertices[5];
+		UAssimpMeshLibrary::Triangles(mesh, { V0, V1, V2 });
+	}
+	else if (numVertices == 4)
+	{
+		V0 = CVertices[4];
+		V1 = CVertices[5];
+		V2 = CVertices[6];
+		V3 = CVertices[7];
+		UAssimpMeshLibrary::Quads(mesh, { V0, V1, V2, V3 });
+	}
+	
+
+	for (int32 i = 0; i < numVertices; i++)
+	{
+		V0 = CVertices[(i) % numVertices];
+		V3 = CVertices[((i) % (numVertices)) + numVertices];
+		V2 = CVertices[((i + 1) % (numVertices)) + numVertices];
+		V1 = CVertices[(i + 1) % numVertices];
 
 		UAssimpMeshLibrary::Quads(mesh, { V0, V1, V2, V3 });
 	}
@@ -748,8 +764,10 @@ void UEditableMeshComponent::ExtrudeFaces(float Amount)
 	for (UIFace* face : UEditableMeshLibrary::GetSelectedFaces())
 	{
 		ExtrudeFace(face, Amount);
-		CreateGBComponent(face, face->GetPosition());
+		face->Select(false);
 	}
+
+	SpawnGBComponents(true);
 
 	UpdateSceneProxy();
 }

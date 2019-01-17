@@ -41,8 +41,6 @@ UIFace* UIFace::CreateFace(UIMesh* mesh, UIVertex* vertex0, UIVertex* vertex1, U
 	mesh->AddVertex(vertex2);
 
 	face->mNumVertices	= 3;
-	face->mIndices		= { mesh->GetNextAvailableIndex(), mesh->GetNextAvailableIndex() + 1, mesh->GetNextAvailableIndex() + 2 };
-	mesh->IncrementCurrentIndex(3);
 
 	return face;
 }
@@ -75,9 +73,7 @@ UIFace* UIFace::CreateFace(UIMesh* mesh, UIVertex* vertex0, UIVertex* vertex1, U
 	mesh->AddVertex(vertex3);
 
 	face->mNumVertices	= 4;
-	face->mIndices		= { mesh->GetNextAvailableIndex(), mesh->GetNextAvailableIndex() + 1, mesh->GetNextAvailableIndex() + 2, mesh->GetNextAvailableIndex() + 2, mesh->GetNextAvailableIndex() + 3, mesh->GetNextAvailableIndex() };
-	mesh->IncrementCurrentIndex(4);
-
+	
 	return face;
 }
 
@@ -505,6 +501,11 @@ void UIMesh::IncrementCurrentIndex(uint32 amount)
 	mCurrentVertexIndex += amount;
 }
 
+void UIMesh::SetCurrentIndex(uint32 amount)
+{
+	mCurrentVertexIndex = amount;
+}
+
 uint32 UIMesh::GetNextAvailableIndex()
 {
 	if (mFreeIndices.Num() > 0)
@@ -606,7 +607,7 @@ void UIMesh::RemoveVertex(UIVertex* vertex)
 		mVertices.Remove(vertex);
 }
 
-FORCEINLINE void UIMesh::CalculateAndSetSmoothNormals()
+void UIMesh::CalculateAndSetSmoothNormals()
 {	
 	for (int32 i = 0; i < mVertices.Num(); i++)
 	{
@@ -634,7 +635,7 @@ void UIMesh::RemoveFace(UIFace* face)
 	mFreeIndices.Append(face->mIndices);
 }
 
-FORCEINLINE void UIMesh::CreateEdgeTwins()
+void UIMesh::CreateEdgeTwins()
 {
 	for (UIHalfEdge* edge : mEdges)
 	{
@@ -645,7 +646,7 @@ FORCEINLINE void UIMesh::CreateEdgeTwins()
 	}
 }
 
-FORCEINLINE UIHalfEdge* UIMesh::DoesEdgeHasTwin(UIHalfEdge* edge)
+UIHalfEdge* UIMesh::DoesEdgeHasTwin(UIHalfEdge* edge)
 {
 	for (UIHalfEdge* otherEdge : mEdges)
 	{

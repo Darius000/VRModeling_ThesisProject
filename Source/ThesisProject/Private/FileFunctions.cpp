@@ -40,8 +40,4 @@ bool UFileFunctions::GetFiles(TArray<FString>& Files, TArray<FString>& FilePaths
 	return true;
 }
 
-FString UFileFunctions::GetGameDirectory()
-{
-	return FPaths::GameDir();
-}
 

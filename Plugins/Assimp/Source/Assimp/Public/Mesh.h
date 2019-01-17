@@ -205,6 +205,8 @@ public:
 
 	void IncrementCurrentIndex(uint32 amount);
 
+	void SetCurrentIndex(uint32 amount);
+
 	uint32 GetNextAvailableIndex();
 
 	void Destroy() override;
@@ -224,11 +226,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void RemoveVertex(UIVertex* vertex);
 
-	FORCEINLINE void CalculateAndSetSmoothNormals();
+	void CalculateAndSetSmoothNormals();
 
-	FORCEINLINE void CreateEdgeTwins();
+	void CreateEdgeTwins();
 
-	FORCEINLINE UIHalfEdge* DoesEdgeHasTwin(UIHalfEdge* edge);
+	UIHalfEdge* DoesEdgeHasTwin(UIHalfEdge* edge);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		TArray<UIVertex*> mVertices;

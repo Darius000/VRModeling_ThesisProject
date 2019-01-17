@@ -233,6 +233,8 @@ void UAssimpMeshComponent::ConvertMeshToDynamicVertices()
 
 	for (UIMesh* mesh : mMeshes)
 	{
+		mesh->SetCurrentIndex(0);
+
 		for (UIFace* face : mesh->mFaces)
 		{
 			UIHalfEdge* CurrentEdge = face->GetEdge();
@@ -257,6 +259,17 @@ void UAssimpMeshComponent::ConvertMeshToDynamicVertices()
 				CurrentEdge = CurrentEdge->GetNextEdge();
 
 			} while (CurrentEdge != face->GetEdge());
+
+			if (face->mNumVertices == 3)
+			{
+				face->mIndices = { mesh->GetNextAvailableIndex(), mesh->GetNextAvailableIndex() + 1, mesh->GetNextAvailableIndex() + 2 };
+				mesh->IncrementCurrentIndex(3);
+			}
+			else if (face->mNumVertices == 4)
+			{
+				face->mIndices = { mesh->GetNextAvailableIndex(), mesh->GetNextAvailableIndex() + 1, mesh->GetNextAvailableIndex() + 2, mesh->GetNextAvailableIndex() + 2, mesh->GetNextAvailableIndex() + 3, mesh->GetNextAvailableIndex() };
+				mesh->IncrementCurrentIndex(4);
+			}
 
 			Indices.Append(face->mIndices);
 		}
