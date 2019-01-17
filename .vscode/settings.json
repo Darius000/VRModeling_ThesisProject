@@ -1,0 +1,11 @@
+{
+	"files.exclude": {
+		"D:/Dev/Unreal/ThesisProject/.git": true,
+		"D:/Dev/Unreal/ThesisProject/.vscode": true,
+		"D:/Dev/Unreal/ThesisProject/Content": true,
+		"D:/Dev/Unreal/ThesisProject/Export": true,
+		"D:/Dev/Unreal/ThesisProject/Import": true,
+		"D:/Dev/Unreal/ThesisProject/Intermediate": true,
+		"D:/Dev/Unreal/ThesisProject/Saved": true
+	}
+}

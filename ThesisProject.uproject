@@ -1,0 +1,29 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "4.21",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "ThesisProject",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"Core",
+				"RenderCore",
+				"ShaderCore",
+				"RHI",
+				"CoreUObject",
+				"UMG",
+				"Assimp"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "Assimp",
+			"Enabled": true
+		}
+	]
+}

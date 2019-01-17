@@ -1,0 +1,35 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "AssimpLibrary",
+	"Description": "Includes the assimp model loadig library",
+	"Category": "Other",
+	"CreatedBy": "Darius Bigbee",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "Assimp",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"RenderCore",
+        "ShaderCore",
+        "RHI",
+        "Interactions"
+			]
+		}
+	],
+	"Plugins": [                      
+    {
+      "Name": "Interactions",
+      "Enabled":  true
+    }
+   ]
+}

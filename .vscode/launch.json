@@ -1,0 +1,128 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "ThesisProject (Debug)",
+			"request": "launch",
+			"preLaunchTask": "ThesisProject Win64 Debug Build",
+			"program": "D:\\Dev\\Unreal\\ThesisProject\\Binaries\\Win64\\ThesisProject-Win64-Debug.exe",
+			"args": [
+			],
+			"cwd": "C:\\Program Files\\Epic Games\\UE_4.21",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.21\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "ThesisProject (DebugGame)",
+			"request": "launch",
+			"preLaunchTask": "ThesisProject Win64 DebugGame Build",
+			"program": "D:\\Dev\\Unreal\\ThesisProject\\Binaries\\Win64\\ThesisProject-Win64-DebugGame.exe",
+			"args": [
+			],
+			"cwd": "C:\\Program Files\\Epic Games\\UE_4.21",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.21\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "ThesisProject (Development)",
+			"request": "launch",
+			"preLaunchTask": "ThesisProject Win64 Development Build",
+			"program": "D:\\Dev\\Unreal\\ThesisProject\\Binaries\\Win64\\ThesisProject.exe",
+			"args": [
+			],
+			"cwd": "C:\\Program Files\\Epic Games\\UE_4.21",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.21\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "ThesisProject (Shipping)",
+			"request": "launch",
+			"preLaunchTask": "ThesisProject Win64 Shipping Build",
+			"program": "D:\\Dev\\Unreal\\ThesisProject\\Binaries\\Win64\\ThesisProject-Win64-Shipping.exe",
+			"args": [
+			],
+			"cwd": "C:\\Program Files\\Epic Games\\UE_4.21",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.21\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "ThesisProject (Test)",
+			"request": "launch",
+			"preLaunchTask": "ThesisProject Win64 Test Build",
+			"program": "D:\\Dev\\Unreal\\ThesisProject\\Binaries\\Win64\\ThesisProject-Win64-Test.exe",
+			"args": [
+			],
+			"cwd": "C:\\Program Files\\Epic Games\\UE_4.21",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.21\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "ThesisProjectEditor (Debug)",
+			"request": "launch",
+			"preLaunchTask": "ThesisProjectEditor Win64 Debug Build",
+			"program": "C:\\Program Files\\Epic Games\\UE_4.21\\Engine\\Binaries\\Win64\\UE4Editor-Win64-Debug.exe",
+			"args": [
+				"D:\\Dev\\Unreal\\ThesisProject\\ThesisProject.uproject"
+			],
+			"cwd": "C:\\Program Files\\Epic Games\\UE_4.21",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.21\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "ThesisProjectEditor (DebugGame)",
+			"request": "launch",
+			"preLaunchTask": "ThesisProjectEditor Win64 DebugGame Build",
+			"program": "C:\\Program Files\\Epic Games\\UE_4.21\\Engine\\Binaries\\Win64\\UE4Editor.exe",
+			"args": [
+				"D:\\Dev\\Unreal\\ThesisProject\\ThesisProject.uproject"
+			],
+			"cwd": "C:\\Program Files\\Epic Games\\UE_4.21",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.21\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "ThesisProjectEditor (Development)",
+			"request": "launch",
+			"preLaunchTask": "ThesisProjectEditor Win64 Development Build",
+			"program": "C:\\Program Files\\Epic Games\\UE_4.21\\Engine\\Binaries\\Win64\\UE4Editor.exe",
+			"args": [
+				"D:\\Dev\\Unreal\\ThesisProject\\ThesisProject.uproject"
+			],
+			"cwd": "C:\\Program Files\\Epic Games\\UE_4.21",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "C:\\Program Files\\Epic Games\\UE_4.21\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "Generate Project Files",
+			"type": "clr",
+			"request": "launch",
+			"program": "C:\\Program Files\\Epic Games\\UE_4.21\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe",
+			"console": "externalTerminal",
+			"args": [
+				"-projectfiles",
+				"-vscode",
+				"-project=\"D:\\Dev\\Unreal\\ThesisProject\\ThesisProject.uproject\"",
+				"-game",
+				"-engine"
+			],
+			"internalConsoleOptions": "openOnSessionStart",
+			"cwd": "C:\\Program Files\\Epic Games\\UE_4.21"
+		}
+	]
+}
