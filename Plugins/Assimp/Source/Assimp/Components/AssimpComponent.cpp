@@ -10,7 +10,7 @@
 
 // Sets default values for this component's properties
 UAssimpMeshComponent::UAssimpMeshComponent()
-	:NormalDisplaySize(10.0f), PointSize(10.0f), EdgeThickness(.2f), bDrawFaceNormals(false), bDrawVertexNormals(false), bDrawVertices(false),
+	:NormalDisplaySize(5.0f), PointSize(20.0f), EdgeThickness(.2f), bDrawFaceNormals(false), bDrawVertexNormals(false), bDrawVertices(false),
 	bDrawEdges(false), ElementColor(255, 128, 0, 255), SelectedElementColor(255, 0, 255, 255), WireframeMaterial(0), 
 	bWireframe(false), bDrawFaces(false), bCheckerMap(false), bSmoothNormals(false)
 {
@@ -324,12 +324,6 @@ void UAssimpMeshComponent::DrawMeshComponents(FPrimitiveDrawInterface* PDI)
 
 			do 
 			{
-				if (bDrawVertices)
-				{
-					FVector Location = UKismetMathLibrary::TransformLocation(GetComponentTransform(), edge->GetVertex()->GetPosition());
-					PDI->DrawPoint(Location, edge->GetVertex()->IsElementSelected() ? SelectedElementColor : ElementColor, PointSize, 0);
-				}
-
 				if (bDrawVertexNormals)
 				{
 					FVector Location = UKismetMathLibrary::TransformLocation(GetComponentTransform(), edge->GetVertex()->GetPosition());
@@ -353,6 +347,16 @@ void UAssimpMeshComponent::DrawMeshComponents(FPrimitiveDrawInterface* PDI)
 				edge = edge->GetNextEdge();
 
 			} while (edge != face->GetEdge());
+		}
+
+		for (UIVertex* vertex : mesh->mVertices)
+		{
+
+			if (bDrawVertices)
+			{
+				FVector Location = UKismetMathLibrary::TransformLocation(GetComponentTransform(), vertex->GetPosition());
+				PDI->DrawPoint(Location, vertex->IsElementSelected() ? SelectedElementColor : ElementColor, PointSize, 0);
+			}
 		}
 	}
 }

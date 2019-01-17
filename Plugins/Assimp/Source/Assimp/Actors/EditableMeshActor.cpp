@@ -12,7 +12,9 @@ AEditableMeshActor::AEditableMeshActor()
 
 	GrabbableComponent = CreateDefaultSubobject<UGrabbableComponent>(TEXT("GrabbableComponent"));
 
-	GrabbableComponent->SetSphereRadius(30.0f);
+	GrabbableComponent->SetSphereRadius(5.0f);
+
+	GrabbableComponent->bHiddenInGame = false;
 
 	SetRootComponent(GrabbableComponent);
 

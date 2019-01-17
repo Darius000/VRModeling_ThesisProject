@@ -8,7 +8,6 @@ UGrabbableComponent::UGrabbableComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	bAutoActivate = true;
 }
 
 void UGrabbableComponent::BeginPlay()

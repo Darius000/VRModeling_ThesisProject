@@ -12,7 +12,7 @@ UInteractableComponent::UInteractableComponent()
 
 	bAutoActivate = true;
 
-	SphereRadius = 20.0f;
+	SphereRadius = 30.0f;
 
 	CreateMaterialBillboardComponent();
 }
