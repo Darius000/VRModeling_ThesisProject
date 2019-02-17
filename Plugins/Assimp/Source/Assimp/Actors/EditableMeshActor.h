@@ -71,6 +71,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (ExposeOnSpawn))
 		FData DefaultData;
 
+	//UFUNCTION()
+	//void UpdateGrabbableComponent(EEditMode Mode);
+
 private:
 	void CreateShape(FData data);
 

@@ -4,6 +4,7 @@
 #include "Runtime/Engine/Public/DrawDebugHelpers.h"
 #include "Assimp/Public/AssimpMeshLibrary.h"
 #include "GrabbableBoxComponent.h"
+#include "kismet/KismetMathLibrary.h"
 #include "Assimp/Public/EditableMeshLibrary.h"
 
 UEditableMeshComponent::UEditableMeshComponent()
@@ -60,6 +61,11 @@ void UEditableMeshComponent::SetEditMode(EEditMode EditMode)
 }
 
 
+EEditMode UEditableMeshComponent::GetCurrentEditMode()
+{
+	return CurrentEditMode;
+}
+
 UGrabbableBoxComponent* UEditableMeshComponent::CreateGBComponent(UIElement* element, const FVector Location)
 {
 	UGrabbableBoxComponent* NewComponent = NewObject<UGrabbableBoxComponent>(this, UGrabbableBoxComponent::StaticClass());
@@ -77,6 +83,7 @@ UGrabbableBoxComponent* UEditableMeshComponent::CreateGBComponent(UIElement* ele
 	NewComponent->SetRelativeLocation(Location);
 	NewComponent->OnUpdated.AddDynamic(this, &UEditableMeshComponent::UpdateSceneProxy);
 	NewComponent->OnPositionUpdated.AddDynamic(this, &UEditableMeshComponent::ApplyFalloff);
+	NewComponent->OnPositionUpdated.AddDynamic(this, &UEditableMeshComponent::MoveSelectedElements);
 	NewComponent->SetMeshElememt(element);
 
 	return NewComponent;
@@ -555,7 +562,7 @@ void UEditableMeshComponent::ToggleFaceSelection(int32 meshIndex, int32 index)
 	}
 }
 
-void UEditableMeshComponent::DeselectAllElementsByType(EMeshElement ElementType)
+void UEditableMeshComponent::ToggleSelectAllElementsByType(EMeshElement ElementType)
 {
 	switch (ElementType)
 	{
@@ -564,10 +571,7 @@ void UEditableMeshComponent::DeselectAllElementsByType(EMeshElement ElementType)
 		{
 			if (UGrabbableBoxComponent* component = Cast<UGrabbableBoxComponent>(vertex->mGrabbableBoxComponent))
 			{
-				if (component->Selected())
-				{
-					component->Select();
-				}
+				component->Select();
 			}
 		}
 		break;
@@ -576,10 +580,7 @@ void UEditableMeshComponent::DeselectAllElementsByType(EMeshElement ElementType)
 		{
 			if (UGrabbableBoxComponent* component = Cast<UGrabbableBoxComponent>(edge->mGrabbableBoxComponent))
 			{
-				if (component->Selected())
-				{
-					component->Select();
-				}
+				component->Select();
 			}
 		}
 		break;
@@ -588,10 +589,7 @@ void UEditableMeshComponent::DeselectAllElementsByType(EMeshElement ElementType)
 		{
 			if (UGrabbableBoxComponent* component = Cast<UGrabbableBoxComponent>(face->mGrabbableBoxComponent))
 			{
-				if (component->Selected())
-				{
-					component->Select();
-				}
+				component->Select();
 			}
 		}
 		break;
@@ -635,6 +633,8 @@ void UEditableMeshComponent::DeleteSelectedFaces()
 	{
 		face->Destroy();
 	}
+
+	SpawnGBComponents(true);
 
 	UpdateSceneProxy();
 }
@@ -692,27 +692,32 @@ void UEditableMeshComponent::ExtrudeFace(UIFace* face, float amount, bool update
 	TArray<UIVertex*> CVertices;
 	UIMesh* mesh = face->GetMesh();
 
-	UIHalfEdge* Start = face->GetEdge();
+	bool bDestroyFaceWhenFinished = false;
+
+	UIHalfEdge* edge = face->GetEdge();
 
 	do
 	{
-		CVertices.Add(Start->GetVertex());
+		CVertices.Add(edge->GetVertex());
 
-		Start = Start->GetNextEdge();
+		if (edge->GetTwinEdge())
+			bDestroyFaceWhenFinished = true;
 
-	} while (Start != face->GetEdge());
+		edge = edge->GetNextEdge();
 
-	Start = face->GetEdge();
+	} while (edge != face->GetEdge());
+
+	edge = face->GetEdge();
 
 	do
 	{
-		FVector NewLocation = Start->GetVertex()->GetPosition() + (-face->CalculateNormal() * amount);
+		FVector NewLocation = edge->GetVertex()->GetPosition() + (-face->CalculateNormal() * amount);
 
 		CVertices.Add(UIVertex::CreateVertex(mesh, NewLocation));
 
-		Start = Start->GetNextEdge();
+		edge = edge->GetNextEdge();
 
-	} while (Start != face->GetEdge());
+	} while (edge != face->GetEdge());
 
 
 	UIVertex* V0;
@@ -751,6 +756,11 @@ void UEditableMeshComponent::ExtrudeFace(UIFace* face, float amount, bool update
 		UAssimpMeshLibrary::Quads(mesh, { V0, V1, V2, V3 });
 	}
 
+	if (bDestroyFaceWhenFinished)
+	{
+		face->Destroy();
+	}
+
 	if (updateScene)
 	{
 		UpdateSceneProxy();
@@ -764,7 +774,9 @@ void UEditableMeshComponent::ExtrudeFaces(float Amount)
 	for (UIFace* face : UEditableMeshLibrary::GetSelectedFaces())
 	{
 		ExtrudeFace(face, Amount);
-		face->Select(false);
+
+		if(face)
+			face->Select(false);
 	}
 
 	SpawnGBComponents(true);
@@ -772,46 +784,32 @@ void UEditableMeshComponent::ExtrudeFaces(float Amount)
 	UpdateSceneProxy();
 }
 
-void UEditableMeshComponent::MergeVertex(UIVertex* V0, UIVertex* V1, bool updateScene)
+void UEditableMeshComponent::MergeVertex(TArray<UIVertex*> vertices, bool updateScene)
 {
-	if (V0 && V1 && V0 != V1 && V0->mConnectedEdges.Num() > 0 && V1->mConnectedEdges.Num() > 0)
+	if (vertices.Num() > 0)
 	{
-		//Calculate Average of the two vertex locations
-		FVector Center = (V0->GetPosition() + V1->GetPosition()) / 2.0f;
+		TArray<FVector> Positions;
+		TArray<UIHalfEdge*> AdjecentEdges;
 
-		UIMesh* mesh = V0->mConnectedEdges[0]->GetFace()->GetMesh();
+		UIMesh* mesh = vertices[0]->mConnectedEdges[0]->GetFace()->GetMesh();
 
-		//Construct a new vertex at that average
-		UIVertex* NewVertex = UIVertex::CreateVertex(mesh, Center);
-
-		TArray<UIHalfEdge*> Adjecent_HE;
-
-		Adjecent_HE.Append(V0->mConnectedEdges);
-		Adjecent_HE.Append(V1->mConnectedEdges);
-
-		//Set the edges new vertex to the new vertex
-		for (UIHalfEdge* A_HE : Adjecent_HE)
+		for (int32 i = 0; i < vertices.Num(); i++)
 		{
-			A_HE->SetVertex(NewVertex);
+			Positions.Add(vertices[i]->GetPosition());
+			AdjecentEdges.Append(vertices[i]->mConnectedEdges);
+			vertices[i]->mConnectedEdges.Reset();
+			mesh->RemoveVertex(vertices[i]);
+			vertices[i]->Destroy();
 		}
 
-		//Recreate Edge Twins
+		FVector AverageLocation = UKismetMathLibrary::GetVectorArrayAverage(Positions);
+
+		for (UIHalfEdge* edge : AdjecentEdges)
+		{
+			edge->SetVertex(UIVertex::CreateVertex(mesh, AverageLocation));
+		}
+
 		mesh->CreateEdgeTwins();
-
-		if (CurrentEditMode == EEditMode::VERTEX)
-		{
-			CreateGBComponent(NewVertex, Center);
-		}
-
-		//Remove connected edges
-		V0->mConnectedEdges.Reset();
-		V1->mConnectedEdges.Reset();
-
-		mesh->RemoveVertex(V0);
-		mesh->RemoveVertex(V1);
-
-		V0->Destroy();
-		V1->Destroy();
 
 		if (updateScene)
 		{
@@ -827,7 +825,9 @@ void UEditableMeshComponent::MergeVertices()
 		UIVertex* V0 = UEditableMeshLibrary::GetSelectedVertices()[0];
 		UIVertex* V1 = UEditableMeshLibrary::GetSelectedVertices()[1];
 
-		MergeVertex(V0, V1);
+		MergeVertex(UEditableMeshLibrary::GetSelectedVertices());
+
+		SpawnGBComponents(true);
 
 		UpdateSceneProxy();
 
@@ -877,6 +877,44 @@ void UEditableMeshComponent::DeleteVertex()
 	for (UIVertex* Vertex : UEditableMeshLibrary::GetSelectedVertices())
 	{
 		Vertex->Destroy();
+	}
+}
+
+void UEditableMeshComponent::MoveSelectedElements(UGrabbableBoxComponent* component , FVector location)
+{
+	FVector Difference = location - component->meshElement->GetPosition();
+
+	if (CurrentEditMode == EEditMode::VERTEX)
+	{	
+		for (UIVertex* vertex : UEditableMeshLibrary::GetSelectedVertices())
+		{
+			if (vertex != component->meshElement)
+			{
+				vertex->SetPosition(vertex->GetPosition() + Difference);
+			}
+		}
+	}
+
+	if (CurrentEditMode == EEditMode::EDGE)
+	{
+		for (UIHalfEdge* edge : UEditableMeshLibrary::GetSelectedEdges())
+		{
+			if (edge != component->meshElement)
+			{
+				edge->SetPosition(edge->GetPosition() + Difference);
+			}
+		}
+	}
+
+	if (CurrentEditMode == EEditMode::FACE)
+	{
+		for (UIFace* face : UEditableMeshLibrary::GetSelectedFaces())
+		{
+			if (face != component->meshElement)
+			{
+				face->SetPosition(face->GetPosition() + Difference);
+			}
+		}
 	}
 }
 

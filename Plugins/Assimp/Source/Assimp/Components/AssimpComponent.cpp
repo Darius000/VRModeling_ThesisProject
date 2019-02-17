@@ -11,8 +11,8 @@
 // Sets default values for this component's properties
 UAssimpMeshComponent::UAssimpMeshComponent()
 	:NormalDisplaySize(5.0f), PointSize(20.0f), EdgeThickness(.2f), bDrawFaceNormals(false), bDrawVertexNormals(false), bDrawVertices(false),
-	bDrawEdges(false), ElementColor(255, 128, 0, 255), SelectedElementColor(255, 0, 255, 255), WireframeMaterial(0), 
-	bWireframe(false), bDrawFaces(false), bCheckerMap(false), bSmoothNormals(false)
+	bDrawEdges(false), ElementColor(255, 0, 255, 255), SelectedElementColor(255, 255, 0, 255), HoveredElementColor(0, 255, 128, 255),
+	WireframeMaterial(0), bWireframe(false), bDrawFaces(false), bCheckerMap(false), bSmoothNormals(false)
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -78,7 +78,7 @@ FBoxSphereBounds UAssimpMeshComponent::CalcBounds(const FTransform& LocalToWorld
 
 	for (FVector pos : BoundPositions)
 	{
-		BoundingBox += LocalToWorld.TransformPosition(pos);
+		BoundingBox += LocalToWorld.TransformPosition(pos);	
 	}
 
 	FBoxSphereBounds NBounds;
@@ -317,7 +317,7 @@ void UAssimpMeshComponent::DrawMeshComponents(FPrimitiveDrawInterface* PDI)
 			if (bDrawFaces)
 			{
 				FVector Location = UKismetMathLibrary::TransformLocation(GetComponentTransform(), face->GetPosition());
-				PDI->DrawPoint(Location, face->IsElementSelected() ?  SelectedElementColor : ElementColor, PointSize, 0);
+				PDI->DrawPoint(Location, face->IsElementSelected() ?  SelectedElementColor : face->IsElementHovered() ? HoveredElementColor : ElementColor, PointSize, 0);
 			}
 
 			UIHalfEdge* edge = face->GetEdge();
@@ -333,6 +333,7 @@ void UAssimpMeshComponent::DrawMeshComponents(FPrimitiveDrawInterface* PDI)
 					PDI->DrawLine(Location, Location + (NDirection * NormalDisplaySize), FLinearColor::Green, 0);
 					PDI->DrawLine(Location, Location + (BiDirection * NormalDisplaySize), FLinearColor::Blue, 0);
 					PDI->DrawLine(Location, Location + (TanDirection * NormalDisplaySize), FLinearColor::Red, 0);
+				
 				}
 
 				if (bDrawEdges)
@@ -341,7 +342,8 @@ void UAssimpMeshComponent::DrawMeshComponents(FPrimitiveDrawInterface* PDI)
 					FVector NextLocation = UKismetMathLibrary::TransformLocation(GetComponentTransform(), edge->GetNextEdge()->GetVertex()->GetPosition());
 
 					//PDI->DrawLine(Location, NextLocation, edge->mTwinEdge ? FLinearColor::Green : FLinearColor::Red, 0, EdgeThickness);
-					PDI->DrawLine(Location, NextLocation, edge->IsElementSelected() ? SelectedElementColor : ElementColor, 0, EdgeThickness);
+					PDI->DrawLine(Location, NextLocation, edge->IsElementSelected() ? SelectedElementColor : edge->IsElementHovered() ? HoveredElementColor : ElementColor, 0, EdgeThickness);
+					PDI->DrawPoint(edge->GetPosition(), edge->IsElementSelected() ? SelectedElementColor : edge->IsElementHovered() ? HoveredElementColor : ElementColor, PointSize, 0);
 				}
 
 				edge = edge->GetNextEdge();
@@ -355,7 +357,7 @@ void UAssimpMeshComponent::DrawMeshComponents(FPrimitiveDrawInterface* PDI)
 			if (bDrawVertices)
 			{
 				FVector Location = UKismetMathLibrary::TransformLocation(GetComponentTransform(), vertex->GetPosition());
-				PDI->DrawPoint(Location, vertex->IsElementSelected() ? SelectedElementColor : ElementColor, PointSize, 0);
+				PDI->DrawPoint(Location, vertex->IsElementSelected() ? SelectedElementColor : vertex->IsElementHovered() ? HoveredElementColor : ElementColor, PointSize, 0);
 			}
 		}
 	}
@@ -552,6 +554,7 @@ const aiScene* UAssimpMeshComponent::CreateAssimpScene()
 
 	return scene;
 }
+
 
 void UAssimpMeshComponent::AddMesh(UIMesh*& mesh)
 {

@@ -76,56 +76,58 @@ void UTrackOverlapsComponent::FindComponentByName()
 
 void UTrackOverlapsComponent::AddOverlappedItem(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool FromSweep, const FHitResult& SweepResult)
 {
-	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UI_Interact::StaticClass()))
-	{
-		//Future use
-	}
-
-	if (UKismetSystemLibrary::DoesImplementInterface(OtherComponent, UI_Interact::StaticClass()))
-	{
-		//Future use
-	}
-
 	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UI_Grabbable::StaticClass()))
 	{
-		OverlappedActors.AddUnique(OtherActor);
-
-		OnItemAdded.Broadcast(OtherActor);
+		OnAddActor(OtherActor);
 	}
 
 	if (UKismetSystemLibrary::DoesImplementInterface(OtherComponent, UI_Grabbable::StaticClass()))
 	{
-		OverlappedComponents.AddUnique(OtherComponent);
-
-		OnItemAdded.Broadcast(OtherComponent);
+		OnAddComponent(OtherComponent);
 	}
 }
 
 void UTrackOverlapsComponent::RemoveOverlappedItem(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex)
 {
-	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UI_Interact::StaticClass()))
-	{
-		//Future use
-	}
-
-	if (UKismetSystemLibrary::DoesImplementInterface(OtherComponent, UI_Interact::StaticClass()))
-	{
-		//Future use
-	}
-
 	if (UKismetSystemLibrary::DoesImplementInterface(OtherActor, UI_Grabbable::StaticClass()))
 	{
-		OverlappedActors.Remove(OtherActor);
-
-		OnItemRemoved.Broadcast(OtherActor);
+		OnRemoveActor(OtherActor);
 	}
 
 	if (UKismetSystemLibrary::DoesImplementInterface(OtherComponent, UI_Grabbable::StaticClass()))
 	{
-		OverlappedComponents.Remove(OtherComponent);
-
-		OnItemRemoved.Broadcast(OtherComponent);
+		OnRemoveComponent(OtherComponent);
 	}
+}
+
+void UTrackOverlapsComponent::OnAddActor(AActor* actor)
+{
+	OverlappedActors.AddUnique(actor);
+
+	OnItemAdded.Broadcast(actor);
+}
+
+void UTrackOverlapsComponent::OnRemoveActor(AActor* actor)
+{
+	int32 numRemoved = OverlappedActors.Remove(actor);
+
+	if(numRemoved > 0)
+		OnItemRemoved.Broadcast(actor);
+}
+
+void UTrackOverlapsComponent::OnAddComponent(UPrimitiveComponent* component)
+{	
+	OverlappedComponents.AddUnique(component);
+
+	OnItemAdded.Broadcast(component);
+}
+
+void UTrackOverlapsComponent::OnRemoveComponent(UPrimitiveComponent* component)
+{
+	int32 numRemoved = OverlappedComponents.Remove(component);
+
+	if(numRemoved > 0)
+		OnItemRemoved.Broadcast(component);
 }
 
 void UTrackOverlapsComponent::GetFirstActor(AActor*& actor, bool& valid)

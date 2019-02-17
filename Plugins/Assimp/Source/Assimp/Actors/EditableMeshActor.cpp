@@ -12,18 +12,20 @@ AEditableMeshActor::AEditableMeshActor()
 
 	GrabbableComponent = CreateDefaultSubobject<UGrabbableComponent>(TEXT("GrabbableComponent"));
 
-	GrabbableComponent->SetSphereRadius(5.0f);
-
 	GrabbableComponent->bHiddenInGame = false;
 
 	SetRootComponent(GrabbableComponent);
 
 	EditableMeshComponent->SetupAttachment(RootComponent);
+
+	GrabbableComponent->SetBoxExtent(FVector(1.0f));
 }
 
 void AEditableMeshActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//EditableMeshComponent->OnEditModeChanged.AddDynamic(this, &AEditableMeshActor::UpdateGrabbableComponent);
 
 	GrabbableComponent->OnGrab.AddDynamic(this, &AEditableMeshActor::Grab);
 
@@ -38,6 +40,14 @@ void AEditableMeshActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 	RemoveAsCurrentMeshComponent(this);
 }
+
+/*void AEditableMeshActor::UpdateGrabbableComponent(EEditMode Mode)
+{
+	if (Mode == EEditMode::OBJECT)
+	{
+		GrabbableComponent->SetBoxExtent(EditableMeshComponent->Bounds.BoxExtent);
+	}
+}*/
 
 void AEditableMeshActor::Grab(USceneComponent* attatchTo, FName socket, EControllerHand hand)
 {
@@ -105,6 +115,8 @@ void AEditableMeshActor::CreateShape(FData data)
 		EditableMeshComponent->ImportModel(data.importPath, errorCode);
 		break;
 	}
+
+	//UpdateGrabbableComponent(EEditMode::OBJECT);
 
 	return;
 }

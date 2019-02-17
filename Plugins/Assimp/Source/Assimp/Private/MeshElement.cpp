@@ -16,6 +16,11 @@ void UIObject::Select(bool select)
 	mSelected = select;
 }
 
+void UIObject::Hover(bool hovered)
+{
+	mHovered = hovered;
+}
+
 void UIObject::Destroy()
 {
 	ConditionalBeginDestroy();
@@ -24,6 +29,11 @@ void UIObject::Destroy()
 bool UIObject::IsElementSelected()
 {
 	return mSelected;
+}
+
+bool UIObject::IsElementHovered()
+{
+	return mHovered;
 }
 
 UIElement::UIElement()

@@ -61,6 +61,7 @@ public:
 	UIMesh* ProcessMesh(aiMesh* mesh, const aiScene* scene);
 	const aiScene* CreateAssimpScene();
 
+public:
 	UFUNCTION(BlueprintCallable)
 		void AddMesh(UIMesh*& mesh);
 
@@ -127,6 +128,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 		FColor SelectedElementColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
+		FColor HoveredElementColor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings")
 		float EdgeThickness;

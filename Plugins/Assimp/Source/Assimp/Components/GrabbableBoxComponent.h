@@ -45,8 +45,6 @@ public:
 
 	virtual FPrimitiveSceneProxy* CreateSceneProxy() override;
 
-	virtual void CreateMaterialBillboardComponent() override;
-
 	void SetMeshElememt(UIElement* element);
 
 	UFUNCTION()
@@ -82,11 +80,4 @@ public:
 
 	UPROPERTY()
 		UIElement* meshElement;
-
-private:
-	UPROPERTY()
-		UMaterialInterface* VertexMaterial;
-
-	UPROPERTY()
-		UMaterialInstanceDynamic* VertexDynmicMaterial;
 };

@@ -18,9 +18,11 @@ UGrabbableBoxComponent::UGrabbableBoxComponent()
 	SetCollisionResponseToChannel(GRABBABLECOMPONENT_COLLISION, ECR_Overlap);
 	SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
+	BoxExtent = FVector(.5f);
+
 	//ShapeColor = FColor(255, 255, 255);
 
-	SphereRadius = .5f;
+//	SetBoxExtent(FVector(0.5f));
 
 	/*static ConstructorHelpers::FObjectFinder<UMaterialInterface> Material(TEXT("/Assimp/Materials/ElementMaterial"));
 
@@ -39,25 +41,7 @@ void UGrabbableBoxComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	/*OnComponentBeginOverlap.AddDynamic(this, &UGrabbableBoxComponent::BeginOverlapped);
-
-	OnComponentEndOverlap.AddDynamic(this, &UGrabbableBoxComponent::EndOverlapped);*/
-
 	OwnerActor = GetOwner();
-
-	//ShapeColor = DEFAULTCOLOR;
-
-	/*materialBillboardComponent = NewObject<UMaterialBillboardComponent>(this, UMaterialBillboardComponent::StaticClass());
-	materialBillboardComponent->SetupAttachment(this);
-	materialBillboardComponent->SetWorldScale3D(FVector(0.01f));
-	materialBillboardComponent->bHiddenInGame = false;
-	materialBillboardComponent->RegisterComponent();*/	
-
-	//if (VertexMaterial)
-	//{
-	//	VertexDynmicMaterial = UMaterialInstanceDynamic::Create(VertexMaterial, this);
-	//	//materialBillboardComponent->AddElement(VertexDynmicMaterial, nullptr, false, 1.0f, 1.0f, nullptr);
-	//}
 
 	SetComponentTickEnabled(false);
 }
@@ -81,19 +65,12 @@ void UGrabbableBoxComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 void UGrabbableBoxComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
 	Super::OnComponentDestroyed(bDestroyingHierarchy);
-
-	//if (materialBillboardComponent) materialBillboardComponent->DestroyComponent();
 }
 
 
 FPrimitiveSceneProxy* UGrabbableBoxComponent::CreateSceneProxy()
 {
 	return nullptr;
-}
-
-void UGrabbableBoxComponent::CreateMaterialBillboardComponent()
-{
-	
 }
 
 void UGrabbableBoxComponent::SetMeshElememt(UIElement* element)
@@ -106,22 +83,15 @@ void UGrabbableBoxComponent::SetMeshElememt(UIElement* element)
 
 void UGrabbableBoxComponent::BeginOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	/*if (mSelected == false && OtherComp->ComponentHasTag("UserGrab"))
-	{
-		ShapeColor = OVERLAPPEDCOLOR;
-
-		MarkRenderStateDirty();
-	}*/
+	
+	if (!meshElement->IsElementSelected())
+		meshElement->Hover(true);
 }
 
 void UGrabbableBoxComponent::EndOverlapped(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	/*if (mSelected == false && OtherComp->ComponentHasTag("UserGrab"))
-	{
-		ShapeColor = DEFAULTCOLOR;
-
-		MarkRenderStateDirty();
-	}*/
+	if(!meshElement->IsElementSelected())
+		meshElement->Hover(false);
 }
 
 void UGrabbableBoxComponent::Grab_Implementation(USceneComponent* attatchTo, FName socket, EControllerHand hand)
@@ -132,18 +102,11 @@ void UGrabbableBoxComponent::Grab_Implementation(USceneComponent* attatchTo, FNa
 	AttachToComponent(attatchTo, rules, socket);
 
 	OnGrab.Broadcast(attatchTo, socket, hand);
-	
-	if(meshElement)
+
+	if (meshElement)
 		meshElement->OnGrabbed();
 
 	grabbed = true;
-
-	/*if (mSelected == false)
-	{
-		ShapeColor = OVERLAPPEDCOLOR;
-
-		MarkRenderStateDirty();
-	}*/
 
 	SetComponentTickEnabled(true);
 }
@@ -156,17 +119,11 @@ void UGrabbableBoxComponent::Release_Implementation()
 
 	OnRelease.Broadcast();
 
-	if(meshElement)
+	if (meshElement)
 		meshElement->OnReleased();
 
 	grabbed = false;
 
-	/*if (mSelected == false)
-	{
-		ShapeColor = DEFAULTCOLOR;
-
-		MarkRenderStateDirty();
-	}*/
 
 	SetComponentTickEnabled(false);
 }
@@ -198,12 +155,6 @@ void UGrabbableBoxComponent::Select()
 
 	if (meshElement)
 		meshElement->Select(mSelected);
-
-	/*mSelected ? ShapeColor = SELECTEDCOLOR : ShapeColor = DEFAULTCOLOR;
-
-	VertexDynmicMaterial->SetVectorParameterValue("Tint", mSelected ? FLinearColor::Red : FLinearColor::White);
-
-	MarkRenderStateDirty();*/
 }
 
 bool UGrabbableBoxComponent::Selected()

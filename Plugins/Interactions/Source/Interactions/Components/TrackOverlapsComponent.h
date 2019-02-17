@@ -67,12 +67,12 @@ public:
 	//virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
 
-private:
+protected:
 	TArray<UPrimitiveComponent*> OverlappedComponents;
 
 	TArray<AActor*> OverlappedActors;
 
-
+private:
 	void FindComponentByName();
 
 	UFUNCTION()
@@ -81,6 +81,18 @@ private:
 	UFUNCTION()
 		void RemoveOverlappedItem(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex);
 
+protected:
+	UFUNCTION(BlueprintCallable)
+		virtual void OnAddActor(AActor* actor);
+
+	UFUNCTION(BlueprintCallable)
+		virtual void OnRemoveActor(AActor* actor);
+
+	UFUNCTION(BlueprintCallable)
+		virtual void OnAddComponent(UPrimitiveComponent* component);
+
+	UFUNCTION(BlueprintCallable)
+		virtual void OnRemoveComponent(UPrimitiveComponent* component);
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UPrimitiveComponent* TestOverlappingComponent;

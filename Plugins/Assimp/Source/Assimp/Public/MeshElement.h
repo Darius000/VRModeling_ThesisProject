@@ -22,14 +22,23 @@ public:
 		virtual void Select(bool select);
 
 	UFUNCTION(BlueprintCallable, Category = "MeshObject")
+		void Hover(bool hovered);
+
+	UFUNCTION(BlueprintCallable, Category = "MeshObject")
 		virtual void Destroy();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "MeshObject")
 		bool IsElementSelected();
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "MeshObject")
+		bool IsElementHovered();
+
 private:
 	UPROPERTY()
 		bool mSelected;
+
+	UPROPERTY()
+		bool mHovered;
 };
 
 UCLASS(BlueprintType)

@@ -72,6 +72,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void SetEditMode(EEditMode EditMode);
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+		EEditMode GetCurrentEditMode();
+
 	/*Procedural Shapes*/
 	UFUNCTION(BlueprintCallable)
 		void Plane(float width = 100.0f, float length = 100.0f);
@@ -121,7 +124,7 @@ public:
 		void ToggleFaceSelection(int32 meshIndex, int32 index);
 
 	UFUNCTION(BlueprintCallable)
-		void DeselectAllElementsByType(EMeshElement ElementType);
+		void ToggleSelectAllElementsByType(EMeshElement ElementType);
 
 	UFUNCTION(BlueprintCallable)
 		void SelectBorderEdges();
@@ -145,7 +148,7 @@ public:
 		void ExtrudeFaces(float Amount);
 
 	UFUNCTION(BlueprintCallable)
-		void MergeVertex(UIVertex* V0, UIVertex* V1, bool updateScene = false);
+		void MergeVertex(TArray<UIVertex*> vertices, bool updateScene = false);
 
 	UFUNCTION(BlueprintCallable)
 		void MergeVertices();
@@ -158,6 +161,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void DeleteVertex();
+
+	UFUNCTION()
+		void MoveSelectedElements(UGrabbableBoxComponent* component, FVector location);
 
 	UFUNCTION()
 		void ApplyFalloff(UGrabbableBoxComponent* component, FVector location);

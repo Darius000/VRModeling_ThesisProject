@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/ActorComponent.h"
-#include "Components/SphereComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/MaterialBillboardComponent.h"
 #include "Interactions/Interfaces/I_Interact.h"
 #include "InteractableComponent.generated.h"
 
 UCLASS(ClassGroup = (Interact), meta = (BlueprintSpawnableComponent))
-class INTERACTIONS_API UInteractableComponent : public USphereComponent, public II_Interact
+class INTERACTIONS_API UInteractableComponent : public UBoxComponent, public II_Interact
 {
 	GENERATED_BODY()
 	
@@ -54,11 +54,5 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 		static bool HasInteractableComponent(AActor* actor);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		UMaterialBillboardComponent* materialBillboardComponent;
-
-	UFUNCTION()
-		virtual void CreateMaterialBillboardComponent();
 };
 

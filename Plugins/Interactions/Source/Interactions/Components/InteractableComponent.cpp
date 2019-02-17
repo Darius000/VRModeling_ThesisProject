@@ -12,9 +12,7 @@ UInteractableComponent::UInteractableComponent()
 
 	bAutoActivate = true;
 
-	SphereRadius = 30.0f;
-
-	CreateMaterialBillboardComponent();
+	//SetBoxExtent(FVector(50.0f));
 }
 
 void UInteractableComponent::BeginPlay()
@@ -71,13 +69,5 @@ bool UInteractableComponent::HasInteractableComponent(AActor* actor)
 	}
 
 	return false;
-}
-
-void UInteractableComponent::CreateMaterialBillboardComponent()
-{
-	materialBillboardComponent = CreateDefaultSubobject<UMaterialBillboardComponent>(TEXT("Sprite"));
-	materialBillboardComponent->SetupAttachment(this);
-	materialBillboardComponent->SetRelativeScale3D(FVector(.3f));
-	materialBillboardComponent->bHiddenInGame = false;
 }
 
