@@ -8,34 +8,37 @@ NOTE: Some items are missing from this version, videos for tutorial and meshes t
 sphere and torus, other meshes are generated procedurally
 
 ABOUT THE PROJECT:
-	UI Widgets:
-	Widgets for the UI can be found in the UI folder found in the content folder
 
-	VR Controls
-	VR Blueprints are found in the VR Integrator folder that can be found on the Unreal Marketplace (Has been Modified to work with this project)
-	https://www.unrealengine.com/marketplace/vr-integrator-radial-and-dockable-menus
+Widgets for the UI can be found in the UI folder found in the content folder
 
-	Main Source folder found at root directory includes a static file function library (Exposed in Blueprints) created to show all folders and files in a directory provided
+VR Blueprints are found in the VR Integrator folder that can be found on the Unreal Marketplace (Has been Modified to work with this project)
+https://www.unrealengine.com/marketplace/vr-integrator-radial-and-dockable-menus
 
-	Two Plugins are included:
-		Interactions Plugin: File Location - VRModeling_ThesisProject\Plugins\Interactions
-			Includes all classes and interfaces for interactions with the world
+Main Source folder found at root directory includes a static file function library (Exposed in Blueprints) created to show all folders and files in a directory provided
 
-		ASSIMP Plugin: File Location - VRModeling_ThesisProject\Plugins\Assimp
-			AssimpMeshComponent includes the Assimp library to allow exporting and importing of meshes
-			EdtableMeshComponent (Subclasses Assimp Component) includes all functionst that modify a mesh created by this component
-			Other Components that allow interaction with the mesh points
+Two Plugins are included:
+Interactions Plugin: File Location - VRModeling_ThesisProject\Plugins\Interactions
+	Includes all classes and interfaces for interactions with the world
 
-			Meshes included that can be created (Exposed as Blueprints from the Editablemeshcomponent) but are not listed on the create menu
-			Rectangle
-			Cube
-			Disk
-			Cylinder
-			Pipe
-			Tetrahedron
-			Octohredren
-			Others, that may not be mentioned
+ASSIMP Plugin: File Location - VRModeling_ThesisProject\Plugins\Assimp
+	AssimpMeshComponent includes the Assimp library to allow exporting and importing of meshes
+	EdtableMeshComponent (Subclasses Assimp Component) includes all functionst that modify a mesh created by this component
+	Other Components that allow interaction with the mesh points
 
+	Meshes included that can be created (Exposed as Blueprints from the Editablemeshcomponent) but are not listed on the create menu
+	Rectangle
+	Cube
+	Disk
+	Cylinder
+	Pipe
+	Tetrahedron
+	Octohredren
+	Others, that may not be mentioned
+	
+Controls when starting the project in VR can be found here:
+https://drive.google.com/open?id=1QEyrJRZBq4yc1-8hITdUZ6L2K5VeQwI7
+
+			
 Full Project Link w/o setup needed
 https://drive.google.com/open?id=1QO6odH2Jc3DIDJ7LoJiS89VsgYoXgyun
 
