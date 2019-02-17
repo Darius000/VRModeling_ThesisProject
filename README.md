@@ -1,4 +1,4 @@
-# VR 3D Modeling (Unreal Project)
+# VR 3D Modeling (Unreal Project v.4.21)
 
 HOW TO SETUP:
 1. Find the .Uproject exe and right click to generate the visual studio project
